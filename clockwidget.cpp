@@ -78,7 +78,7 @@ void ClockWidget::paintEvent(QPaintEvent *event)
     static const QPoint hourHand[3] = {
         QPoint(7, 8),
         QPoint(-7, 8),
-        QPoint(0, -30)
+        QPoint(0, -40)
     };
     static const QPoint minuteHand[3] = {
         QPoint(7, 8),
@@ -88,13 +88,14 @@ void ClockWidget::paintEvent(QPaintEvent *event)
     static const QPoint secondHand[3] = {
         QPoint(7, 8),
         QPoint(-7, 8),
-        QPoint(0, -80)
+        QPoint(0, -90)
     };
 
     // 时针、分针、秒针颜色
-    QColor hourColor(200, 100, 0, 200);
-    QColor minuteColor(0, 127, 127, 150);
-    QColor secondColor(0, 160, 230, 150);
+    QColor panelColor(47,79,79, 255);
+    QColor hourColor(139,0,139, 255);
+    QColor minuteColor(0,0,205, 168);
+    QColor secondColor(34,139,34, 128);
 
     int side = qMin(width(), height());
     QTime time = QTime::currentTime();
@@ -116,12 +117,18 @@ void ClockWidget::paintEvent(QPaintEvent *event)
     painter.drawConvexPolygon(hourHand, 3);
     painter.restore();
 
-    painter.setPen(hourColor);
-
+    painter.setPen(panelColor);
     // 绘制小时线 （360度 / 12 = 30度）
     for (int i = 0; i < 12; ++i) {
         painter.drawLine(88, 0, 96, 0);
         painter.rotate(30.0);
+    }
+    // 绘制分钟线 （360度 / 60 = 6度）
+    for (int j = 0; j < 60; ++j) {
+        if ((j % 5) != 0)
+            painter.drawLine(92, 0, 96, 0);
+
+        painter.rotate(6.0);
     }
 
     int radius = 100;
@@ -136,7 +143,9 @@ void ClockWidget::paintEvent(QPaintEvent *event)
         nHour = i + 3;
         if (nHour > 12)
             nHour -= 12;
-        painter.drawText(textRectF(radius*0.8, pointSize, i * 30), Qt::AlignCenter, QString::number(nHour));
+
+        painter.drawText(textRectF(radius*0.8, pointSize, i * 30),
+                         Qt::AlignCenter, QString::number(nHour));
     }
 
     // 绘制分针
@@ -147,15 +156,6 @@ void ClockWidget::paintEvent(QPaintEvent *event)
     painter.rotate(6.0 * (time.minute() + time.second() / 60.0));
     painter.drawConvexPolygon(minuteHand, 3);
     painter.restore();
-
-    painter.setPen(minuteColor);
-
-    // 绘制分钟线 （360度 / 60 = 6度）
-    for (int j = 0; j < 60; ++j) {
-        if ((j % 5) != 0)
-            painter.drawLine(92, 0, 96, 0);
-        painter.rotate(6.0);
-    }
 
     // 绘制秒针
     painter.setPen(Qt::NoPen);
