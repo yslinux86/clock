@@ -195,7 +195,7 @@ void ClockWidget::on_pushButton_2_clicked()
         trayIcon->setIcon(icon);
 
         //当鼠标移动到托盘上的图标时，会显示此处设置的内容
-        trayIcon->setToolTip(QString("辰光融信 耗材写入工具"));
+        trayIcon->setToolTip(QString("显示时钟"));
     }
 
     //在系统托盘显示此对象
